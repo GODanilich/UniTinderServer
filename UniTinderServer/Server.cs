@@ -18,9 +18,13 @@ namespace UniTinderServer
         private static TcpListener _tcpListener;
         public delegate void PacketHandler(int fromClient, Packet packet);
         public static Dictionary<int, PacketHandler> packetHandlers;
+        public static DataBase dataBase;
 
         public static void Start(int maxUsers, int port)
         {
+            string path = "Data Source= C:\\Users\\danil\\source\\repos\\database\\database\\UniTinderWithData.db";
+            dataBase = new DataBase(path);
+
             MaxUsers = maxUsers;
             Port = port;
 

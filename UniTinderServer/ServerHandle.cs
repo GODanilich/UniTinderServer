@@ -13,7 +13,16 @@ namespace UniTinderServer
             int clientCheck = packet.ReadInt();
             string username = packet.ReadString();
 
-            Console.WriteLine($"{Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now user {fromClient} and has username {username}");
+            if (Server.dataBase.GetUserIDByNickname(username) != -1)
+            {
+                Console.WriteLine($"{Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now user {fromClient} and has username {username}");
+            }
+            else
+            {
+                Console.WriteLine($"{Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint} username {username} is not registered");
+            }
+
+            
             if (fromClient != clientCheck)
             {
                 Console.WriteLine($"Player \"{username}\" (ID: {fromClient}) has assumed the wrong client ID ({clientCheck})!");
