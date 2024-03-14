@@ -8,6 +8,8 @@ using System.Data.SQLite;
 
 namespace UniTinderServer
 {
+
+
     class DataBase : IDisposable
     {
 
@@ -21,7 +23,7 @@ namespace UniTinderServer
 
         public int GetUserIDByNickname(string Nickname)
         {
-            
+
             using (SQLiteCommand cmd = new SQLiteCommand($"SELECT * FROM User WHERE Nickname = \"{Nickname}\"", _sqliteConnection))
             {
                 using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -32,16 +34,14 @@ namespace UniTinderServer
                         {
                             return Convert.ToInt32(reader.GetValue(0));
                         }
-                        return -1;
+                        Console.Write("База данных не заполнена!"); return -1;
                     }
                     else { Console.WriteLine("Пользователь не существует"); return -1; }
                 }
-                    
-            }
-              
-        }
 
-        #region Til better times
+            }
+
+        }
 
         public DataTable SelectTable(string tableName)
         {
@@ -60,7 +60,25 @@ namespace UniTinderServer
             string valuesString = string.Join(", ", values.Select(v => $"'{v}'"));
             ExecuteNonQuery($"INSERT INTO {tableName} ({columnsString}) VALUES ({valuesString})");
         }
+        public string FindValueInColumn(string tableName, string searchColumn, string searchValue, string returnColumn)
+        {
+            string query = $"SELECT {returnColumn} FROM {tableName} WHERE {searchColumn} = '{searchValue}'";
+            using (SQLiteCommand cmd = new SQLiteCommand(query, _sqliteConnection))
+            {
+                object result = cmd.ExecuteScalar();
+                return result != null ? result.ToString() : null;
+            }
+        }
+        public int UpdateRow(string tableName, string[] columns, string[] values, string conditionColumn, string conditionValue)
+        {
+            if (columns.Length != values.Length)
+                throw new ArgumentException("Number of columns must match number of values.");
 
+            string setClause = string.Join(", ", Enumerable.Range(0, columns.Length)
+                .Select(i => $"{columns[i]} = '{values[i]}'"));
+
+            return ExecuteNonQuery($"UPDATE {tableName} SET {setClause} WHERE {conditionColumn} = '{conditionValue}'");
+        }
         public int DeleteRow(string tableName, string column, string value)
         {
             return ExecuteNonQuery($"DELETE FROM {tableName} WHERE {column} = '{value}'");
@@ -87,11 +105,9 @@ namespace UniTinderServer
             }
         }
 
-        #endregion
-
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _sqliteConnection.Dispose(); // Утилизируем
         }
     }
 }

@@ -14,6 +14,7 @@ namespace UniTinderServer
         public int id;
         public TCP tcp;
 
+
         public Client(int id)
         {
             this.id = id;
@@ -23,7 +24,7 @@ namespace UniTinderServer
         public class TCP
         {
             public TcpClient socket;
-
+            public int idInDatabase;
             private readonly int _id;
             private NetworkStream _stream;
             private Packet _receivedData;
@@ -145,6 +146,7 @@ namespace UniTinderServer
 
             public void Disconnect()
             {
+                Server.ConnectedUsersIDList.Remove(idInDatabase);
                 socket.Close();
                 _stream = null;
                 _receivedData = null;

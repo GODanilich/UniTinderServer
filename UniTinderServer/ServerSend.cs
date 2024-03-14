@@ -37,13 +37,11 @@ namespace UniTinderServer
             }
         }
 
-        public static void SendIntoApp(int toClient, string message)
+        public static void SendIntoApp(int toClient, int IDInDatabase)
         {
-            using (Packet packet = new Packet((int)ServerPackets.welcome)) 
+            using (Packet packet = new Packet((int)ServerPackets.sendIntoApp)) 
             {
-                packet.Write(message);
-                packet.Write(toClient);
-
+                packet.Write(IDInDatabase);
                 SendTCPData(toClient, packet);
             }
         }

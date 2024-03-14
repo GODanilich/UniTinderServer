@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Runtime.Remoting.Messaging;
 
 namespace UniTinderServer
 {
     class Server
     {  
-        
+        //public static string DBPath = "Data Source = \"C:\\Users\\danil\\source\\repos\\UniTinderServer\\UniTinderServer\\UniTinderWithData.db\"";
+        public static List<int> ConnectedUsersIDList = new List<int>();
         public static int MaxUsers { get; private set; } 
         public static int Port { get; private set; }
         public static Dictionary<int,Client> clients = new Dictionary<int,Client>();
@@ -22,8 +24,9 @@ namespace UniTinderServer
 
         public static void Start(int maxUsers, int port)
         {
-            string path = "Data Source = \"C:\\UniTinderWithData.db\"";
+            string path = "Data Source = \"C:\\Users\\danil\\source\\repos\\UniTinderServer\\UniTinderServer\\UniTinderWithData.db\"";
             dataBase = new DataBase(path);
+
 
             MaxUsers = maxUsers;
             Port = port;
