@@ -9,14 +9,18 @@ namespace UniTinderServer
     /// <summary>Sent from server to client.</summary>
     public enum ServerPackets
     {
-        welcome = 1
+        welcome = 1,
+        registeredNewUser,
+        sendIntoApp
     }
 
     /// <summary>Sent from client to server.</summary>
     public enum ClientPackets
     {
         welcomeReceived = 1,
-        sendMessageToServer = 2
+        sendMessageToServer = 2,
+        registerNewUser,
+        connectUser
     }
 
     public class Packet : IDisposable

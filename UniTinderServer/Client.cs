@@ -42,21 +42,29 @@ namespace UniTinderServer
 
                 _stream = socket.GetStream(); // получение потока данных с клиента
 
+                Packet packet = new Packet((int)ServerPackets.welcome);
+                packet.Write("победа");
+                packet.Write(_id);
+                packet.WriteLength();
+                SendData(packet);
+                packet.Dispose();
+
                 _receivedData = new Packet(); // инициализация пакета
                 _receiveBuffer = new byte[dataBufferSize];
 
                 _stream.BeginRead(_receiveBuffer, 0, dataBufferSize, ReceiveCallback, null); // асинхронное чтение потока
 
-                ServerSend.Welcome(_id, $"Welcome to the server! Your ID is {_id}");
+                //ServerSend.Welcome(_id, $"Welcome to the server! Your ID is {_id}");
             }
 
-            public void SendData(Packet packet)
+            public async void SendData(Packet packet)
             {
                 try
                 {
                     if (socket != null)
                     {
-                        _stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                        //_stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                        await _stream.WriteAsync(packet.ToArray(), 0, packet.Length());
                     }
                 }
                 catch(Exception e)

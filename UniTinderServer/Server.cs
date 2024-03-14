@@ -22,7 +22,7 @@ namespace UniTinderServer
 
         public static void Start(int maxUsers, int port)
         {
-            string path = "Data Source= C:\\Users\\danil\\source\\repos\\database\\database\\UniTinderWithData.db";
+            string path = "Data Source = \"C:\\UniTinderWithData.db\"";
             dataBase = new DataBase(path);
 
             MaxUsers = maxUsers;
@@ -67,8 +67,9 @@ namespace UniTinderServer
 
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived },
-                { (int)ClientPackets.sendMessageToServer, ServerHandle.SendMessageToServer }
+                { (int)ClientPackets.connectUser, ServerHandle.WelcomeReceived },
+                { (int)ClientPackets.sendMessageToServer, ServerHandle.SendMessageToServer },
+                { (int)ClientPackets.registerNewUser, ServerHandle.RegisteredNewUser },
             };
             Console.WriteLine("Initialized packets.");
         }

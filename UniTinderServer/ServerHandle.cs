@@ -10,7 +10,7 @@ namespace UniTinderServer
     {
         public static void WelcomeReceived(int fromClient, Packet packet)
         {
-            int clientCheck = packet.ReadInt();
+            //int clientCheck = packet.ReadInt();
             string username = packet.ReadString();
 
             if (Server.dataBase.GetUserIDByNickname(username) != -1)
@@ -23,14 +23,27 @@ namespace UniTinderServer
             }
 
             
-            if (fromClient != clientCheck)
-            {
-                Console.WriteLine($"Player \"{username}\" (ID: {fromClient}) has assumed the wrong client ID ({clientCheck})!");
-            }
+           // if (fromClient != clientCheck)
+            //{
+            //    Console.WriteLine($"Player \"{username}\" (ID: {fromClient}) has assumed the wrong client ID ({clientCheck})!");
+            //}
             // TODO: send user into app
         }
 
         public static void SendMessageToServer(int fromClient, Packet packet)
+        {
+            int clientCheck = packet.ReadInt();
+            string message = packet.ReadString();
+
+            Console.WriteLine($" message from {Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint} id = {fromClient}: {message}");
+            if (fromClient != clientCheck)
+            {
+                Console.WriteLine($"Player \"\" (ID: {fromClient}) has assumed the wrong client ID ({clientCheck})!");
+            }
+            // TODO: send user into app
+        }
+
+        public static void RegisteredNewUser(int fromClient, Packet packet)
         {
             int clientCheck = packet.ReadInt();
             string message = packet.ReadString();
