@@ -37,11 +37,15 @@ namespace UniTinderServer
             }
         }
 
-        public static void SendIntoApp(int toClient, int IDInDatabase)
+        public static void SendIntoApp(int toClient, int IDInDatabase, int userCount, bool check = true)
         {
             using (Packet packet = new Packet((int)ServerPackets.sendIntoApp)) 
             {
+                packet.Write(check);
+                packet.Write(userCount);
                 packet.Write(IDInDatabase);
+                packet.Write(toClient);
+
                 SendTCPData(toClient, packet);
             }
         }
@@ -50,6 +54,18 @@ namespace UniTinderServer
         {
             using (Packet packet = new Packet((int)ServerPackets.welcome))
             {
+                packet.Write(message);
+                packet.Write(toClient);
+
+                SendTCPData(toClient, packet);
+            }
+        }
+
+        public static void receiveMessageFromUser(int fromClient,int toClient, string message)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.receiveMessageFromUser))
+            {   
+                packet.Write(fromClient);
                 packet.Write(message);
                 packet.Write(toClient);
 

@@ -8,11 +8,23 @@ using System.Net.Sockets;
 
 namespace UniTinderServer
 {
+    public enum ClientState
+    {
+      Authorization = 1,
+      Registration = 2,
+      RegistrationDone = 3,
+      Profile = 4,
+      Chat = 5,
+
+    }
+
     class Client
     {
+
         public static int dataBufferSize = 4096;
         public int id;
         public TCP tcp;
+        public int clientState;
 
 
         public Client(int id)
@@ -41,7 +53,12 @@ namespace UniTinderServer
                 socket.ReceiveBufferSize = dataBufferSize;
                 socket.SendBufferSize = dataBufferSize;
 
+                _receivedData = new Packet(); // инициализация пакета
+                _receiveBuffer = new byte[dataBufferSize];
+
                 _stream = socket.GetStream(); // получение потока данных с клиента
+
+                
 
                 Packet packet = new Packet((int)ServerPackets.welcome);
                 packet.Write("победа");
@@ -50,10 +67,9 @@ namespace UniTinderServer
                 SendData(packet);
                 packet.Dispose();
 
-                _receivedData = new Packet(); // инициализация пакета
-                _receiveBuffer = new byte[dataBufferSize];
 
-                _stream.BeginRead(_receiveBuffer, 0, dataBufferSize, ReceiveCallback, null); // асинхронное чтение потока
+
+                _stream.BeginRead(_receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);// асинхронное чтение потока
 
                 //ServerSend.Welcome(_id, $"Welcome to the server! Your ID is {_id}");
             }

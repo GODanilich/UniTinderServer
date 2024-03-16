@@ -11,7 +11,8 @@ using System.Runtime.Remoting.Messaging;
 namespace UniTinderServer
 {
     class Server
-    {  
+    {
+        public static int connectedUsers = 0;
         //public static string DBPath = "Data Source = \"C:\\Users\\danil\\source\\repos\\UniTinderServer\\UniTinderServer\\UniTinderWithData.db\"";
         public static List<int> ConnectedUsersIDList = new List<int>();
         public static int MaxUsers { get; private set; } 
@@ -24,7 +25,7 @@ namespace UniTinderServer
 
         public static void Start(int maxUsers, int port)
         {
-            string path = "Data Source = \"C:\\Users\\danil\\source\\repos\\UniTinderServer\\UniTinderServer\\UniTinderWithData.db\"";
+            string path = "Data Source = \"C:\\Users\\danil\\source\\repos\\UniTinderServer\\UniTinderServer\\UniTinderWithData (1).db\"";
             dataBase = new DataBase(path);
 
 
@@ -35,6 +36,7 @@ namespace UniTinderServer
             InitializeServerData();
 
             _tcpListener = new TcpListener(IPAddress.Any, Port);
+
             _tcpListener.Start();
             _tcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
 
@@ -52,7 +54,9 @@ namespace UniTinderServer
             {
                 if (clients[i].tcp.socket == null)
                 {
+                    connectedUsers += 1;
                     clients[i].tcp.Connect(client); // для клиента вызываем Connect(client) для сохранения его сокета в словаре
+                    
                     return;
                 }
             }
@@ -71,7 +75,7 @@ namespace UniTinderServer
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)ClientPackets.connectUser, ServerHandle.WelcomeReceived },
-                { (int)ClientPackets.sendMessageToServer, ServerHandle.SendMessageToServer },
+                { (int)ClientPackets.sendMessageToUser, ServerHandle.SendMessageToUser },
                 { (int)ClientPackets.registerNewUser, ServerHandle.RegisteredNewUser },
             };
             Console.WriteLine("Initialized packets.");
